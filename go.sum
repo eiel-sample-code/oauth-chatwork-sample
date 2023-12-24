@@ -1,3 +1,9 @@
+github.com/eiel/golang-oauth2 v0.0.0-20231224161253-c1eb81294ef1 h1:dy2zyc7NnN3Ag5S3fj81oaxLZyRCu4KFqB15lR2hBp0=
+github.com/eiel/golang-oauth2 v0.0.0-20231224161253-c1eb81294ef1/go.mod h1:KY8e3HggoU2PR+iHLwecZgkGsUbQlqcqI2FtTptatH8=
+github.com/eiel/golang-oauth2 v0.0.0-20231224163124-e3c7bd825e3f h1:ErGVAlpPPcGaGtLZSWZWL+QzgjfE6j03mFLq3VSjIpM=
+github.com/eiel/golang-oauth2 v0.0.0-20231224163124-e3c7bd825e3f/go.mod h1:KY8e3HggoU2PR+iHLwecZgkGsUbQlqcqI2FtTptatH8=
+github.com/eiel/golang-oauth2 v0.0.0-20231224163450-bc14bb6281e9 h1:1Wt60U2rssN9imZtDE8ScfyCTGoXTfiE5VEZ7/8eRYw=
+github.com/eiel/golang-oauth2 v0.0.0-20231224163450-bc14bb6281e9/go.mod h1:KY8e3HggoU2PR+iHLwecZgkGsUbQlqcqI2FtTptatH8=
 github.com/golang/protobuf v1.3.1/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
 github.com/golang/protobuf v1.5.0/go.mod h1:FsONVRAS9T7sI+LIUmWTfcYkHO4aIWwzhcaSAoJOfIk=
 github.com/golang/protobuf v1.5.3 h1:KhyjKVUg7Usr/dYsdSqoFveMYd5ko72D+zANwlG1mmg=

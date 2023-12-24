@@ -2,20 +2,17 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
 	"strings"
 
-	"golang.org/x/oauth2"
+	oauth2 "github.com/eiel/golang-oauth2"
+	"github.com/eiel/golang-oauth2/chatwork"
 )
-
-var Endpoint = oauth2.Endpoint{
-	AuthURL:   "https://www.chatwork.com/packages/oauth2/login.php",
-	TokenURL:  "https://oauth.chatwork.com/token",
-	AuthStyle: oauth2.AuthStyleInHeader,
-}
 
 type Env struct {
 	ClientID     string
@@ -73,9 +70,9 @@ func (h CallbackAuthorizationCodeRoute) ServeHTTP(w http.ResponseWriter, r *http
 		return
 	}
 	log.Println("Get AccessToken")
+
 	ctx := context.Background()
 	token, err := h.Conf.Exchange(ctx, code)
-	log.Println("hoge")
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println(err)
@@ -83,17 +80,30 @@ func (h CallbackAuthorizationCodeRoute) ServeHTTP(w http.ResponseWriter, r *http
 	}
 
 	log.Println("Chatwork API get /me")
-	res, err := getMe(token.AccessToken)
+	me, err := getMe(token.AccessToken)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println(err)
 		return
 	}
-	fmt.Fprintf(w, "%s\n", res.Body)
+	fmt.Fprintf(w, "%v\n", me)
 
 }
 
-func getMe(token string) (*http.Response, error) {
+type MeResponse struct {
+	AccountID        int    `json:"account_id"`
+	RoomID           int    `json:"room_id"`
+	Name             string `json:"name"`
+	ChatworkID       string `json:"chatwork_id"`
+	OrganizationID   int    `json:"organization_id"`
+	OrganizationName string `json:"organization_name"`
+	Department       string `json:"department"`
+	Title            string `json:"title"`
+	URL              string `json:"url"`
+	Introduction     string `json:"introduction"`
+}
+
+func getMe(token string) (*MeResponse, error) {
 	base := "https://api.chatwork.com/v2"
 	endpoint := "/me"
 	url := strings.Join([]string{base, endpoint}, "")
@@ -105,7 +115,18 @@ func getMe(token string) (*http.Response, error) {
 	header := fmt.Sprintf("Bearer %v", token)
 	req.Header.Add("authorization", header)
 	htc := &http.Client{}
-	return htc.Do(req)
+	res, err := htc.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+	b, err := io.ReadAll(res.Body)
+
+	var me MeResponse
+	if err := json.Unmarshal(b, &me); err != nil {
+		return nil, err
+	}
+	return &me ,nil
 }
 
 func main() {
@@ -118,7 +139,7 @@ func main() {
 	config := oauth2.Config{
 		ClientID:     env.ClientID,
 		ClientSecret: env.ClientSecret,
-		Endpoint:     Endpoint,
+		Endpoint:     chatwork.Endpoint,
 		Scopes:       []string{"users.profile.me:read"},
 	}
 
